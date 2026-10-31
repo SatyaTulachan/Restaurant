@@ -158,9 +158,20 @@ POST /api/orders
 cp .env.example .env      # then set DB_PASSWORD
 docker compose up --build
 
-Frontend: http://localhost:3000
+Frontend: http://localhost:3000kubectl port-forward svc/frontend 3000:80
 API: http://localhost:8080/api
 
+## Run on Kubernetes (minikube)
+
+minikube start --driver=docker
+docker build -t restaurant-backend:local .
+docker build -t restaurant-frontend:local ./frontend
+minikube image load restaurant-backend:local
+minikube image load restaurant-frontend:local
+kubectl create secret generic db-secret --from-env-file=.env
+kubectl apply -f k8s/
+kubectl port-forward svc/backend 8080:8080
+kubectl port-forward svc/frontend 3000:80
 ## Future Improvements
 
 - Role-based authentication (staff vs. admin)
