@@ -153,16 +153,20 @@ POST /api/orders
 ## Screenshots
 
 ![img.png](img.png)![img_1.png](img_1.png)
+
 ## Run with Docker
 
-cp .env.example .env      # then set DB_PASSWORD
+```bash
+cp .env.example .env      # then set DB_PASSWORD in .env
 docker compose up --build
+```
 
-Frontend: http://localhost:3000kubectl port-forward svc/frontend 3000:80
-API: http://localhost:8080/api
+- Frontend: http://localhost:3000
+- API: http://localhost:8080/api
 
 ## Run on Kubernetes (minikube)
 
+```bash
 minikube start --driver=docker
 docker build -t restaurant-backend:local .
 docker build -t restaurant-frontend:local ./frontend
@@ -170,8 +174,23 @@ minikube image load restaurant-backend:local
 minikube image load restaurant-frontend:local
 kubectl create secret generic db-secret --from-env-file=.env
 kubectl apply -f k8s/
+```
+
+Then forward the ports in two separate terminals:
+
+```bash
 kubectl port-forward svc/backend 8080:8080
+```
+
+```bash
 kubectl port-forward svc/frontend 3000:80
+```
+
+Open http://localhost:3000.
+
+## CI
+
+Every push runs a GitHub Actions pipeline that tests the backend against a MySQL service container and builds the frontend and Docker images.
 ## Future Improvements
 
 - Role-based authentication (staff vs. admin)
